@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
   <div class="keys">
     <div data-key="65" class="key">
       <kbd>A</kbd>
@@ -59,8 +58,53 @@
 
 <script>
 
-</script>
+// Functions
 
+// Task: Change the Key's Appearance and Play Audio
+const playFunction = myEvent => {
+  // Based on the pressed key's code, obtain the appropriate audio element.
+  const audioElement = document.querySelector(`audio[data-key="${myEvent.keyCode}"]`);
+
+  // Obtain the key element.
+  const keyElement = document.querySelector(`.key[data-key="${myEvent.keyCode}"]`);
+
+  // Check if there is an audio element for the selected key.
+  if(!audioElement) {
+    // Otherwise, print out an error message and exit the function.
+    console.log("No Audio for Selected Key");
+    return;
+  }
+
+  // Add the 'playing' class to the key, so that it becomes more prominent.
+  keyElement.classList.add("playing");
+
+  // Play the audio from the beginning.
+  audioElement.currentTime = 0;
+  audioElement.play();
+}
+
+// Task: Resets the Key's Appearance
+const resetKey = myEvent => {
+  // Checks if the property name is 'transform'.
+  if (myEvent.propertyName !== "transform") {
+    // Otherwise, exit the function.
+    return;
+  }
+
+  // Remove the 'playing' class from the key, so that it is no longer prominent.
+  myEvent.target.classList.remove("playing");
+}
+
+// Main Body of Code
+
+// Adds a Reset Function to Every Key
+const keyArray = document.querySelectorAll(".key");
+keyArray.forEach(key => key.addEventListener("transitionend", resetKey));
+
+// Checks to See if a Key has been Pressed and Calls the playFunction.
+document.addEventListener("keydown", playFunction);
+
+</script>
 
 </body>
 </html>
