@@ -26,6 +26,9 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+
+      /* Changed to Flex Container */
+      display: flex;
     }
 
     .panel {
@@ -43,6 +46,15 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+
+      /* Ratio of 1 for Each Flex Item*/
+      flex: 1;
+
+      /* Changed to Flex Container */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -56,6 +68,24 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+
+      /* Moved Flex Items */
+      flex: 1 0 auto;
+
+      /* Changed to Flex Container */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Moved First p Element Up Out of Sight */
+    .panel > :first-child {
+      transform: translateY(-100%);
+    }
+
+    /* Moved Last p Element Down Out of Sight */
+    .panel > :last-child {
+      transform: translateY(100%);
     }
 
     .panel p {
@@ -71,10 +101,20 @@
 
     .panel.open {
       font-size: 40px;
+      flex: 5;
+    }
+
+    /* After Panel Opens, Move First p Element Back */
+    .panel.afterOpen > :first-child {
+      transform: translateY(0%);
+    }
+
+    /* After Panel Opens, Move Last p Element Back */
+    .panel.afterOpen > :last-child {
+      transform: translateY(0%);
     }
 
   </style>
-
 
   <div class="panels">
     <div class="panel panel1">
@@ -106,9 +146,32 @@
 
   <script>
 
+    // Functions
+
+    // Task: Add the 'open' Class to the Panel Clicked On
+    function openPanel() {
+      this.classList.toggle("open");
+    }
+
+    // Task: Add the 'afterOpen' Class After the Panel has Opened
+    function movePanelItems(myEvent) {
+      if (myEvent.propertyName.includes("flex")) {
+        this.classList.toggle("afterOpen");
+      }
+    }
+
+    // Main Body of Code
+
+    // Obtain All Items of Class "panel"
+    const allPanels = document.querySelectorAll(".panel");
+
+    // Add 'click' and 'transitionend' Event Listeners to Each Panel
+    allPanels.forEach(panel => {
+      panel.addEventListener("click", openPanel);
+      panel.addEventListener("transitionend", movePanelItems);
+    });
+
   </script>
-
-
 
 </body>
 </html>
