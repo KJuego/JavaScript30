@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+
+<script>
+
+  // Provided Endpoint
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+  // Functions
+
+  // Task: Obtain and Filter Data Based on 'wordtoMatch'.
+  async function checkForMatches(wordToMatch) {
+    try {
+      const response = await fetch(endpoint);
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        const cities = [...jsonResponse];
+
+        // If Requests are Successful...
+        // Use filter() to Return an Array of the Matched Locations 
+        return cities.filter(location => {
+          const regex = new RegExp(wordToMatch, "gi");
+          return location.city.match(regex) || location.state.match(regex);
+        })
+      } else {
+        throw new Error("Request failed!");
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  // Task: Show All Matched Locations in the Suggestion Box
+  function showMatches() {
+    // Obtain an Array of the Matched Locations
+    const citiesPromise = checkForMatches(this.value);
+    citiesPromise.then(matchedCities => {
+      // Create HTML Code to Show Locations in Suggestions Box
+      const suggestionsBox = document.querySelector(".suggestions");
+      const newHTML = matchedCities.map(location => {
+        
+        // Replace the Value in the Location with HTML Code for the 'hl' Class
+        const regex = new RegExp(this.value, "gi");
+        const newHL = `<span class="hl">${this.value}</span>`;
+        const newCity = location.city.replace(regex, newHL);
+        const newState = location.state.replace(regex, newHL);
+
+        // Return the New HTML Code
+        return `
+          <li>
+            <span class="name">${newCity}, ${newState}</span>
+            <span class="population">${numberWithCommas(location.population)}</span>  
+          </li>
+        `;
+      }).join(""); // Join Array Elements to Form a Single Line
+
+      // Add New HTML Code to the Suggestions Box
+      suggestionsBox.innerHTML = newHTML;
+    });
+  }
+
+  // Task: Format Numbers with Commas
+  // Taken from: https://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Main Body of Code
+
+  // Add 'change' and 'keyup' Event Listeners to the Search Box
+  const searchBox = document.querySelector(".search");
+  searchBox.addEventListener("keyup", showMatches);
+  searchBox.addEventListener("change", showMatches);
+
+</script>
+</body>
+</html>
