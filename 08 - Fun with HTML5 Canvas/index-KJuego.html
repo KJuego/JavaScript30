@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+
+<body>
+
+  <canvas id="draw" width="800" height="800"></canvas>
+
+<script>
+
+  /* Variables */
+  
+  // Canvas, Context, and Related Variables
+  const myCanvas = document.querySelector("#draw");
+  const myContext = myCanvas.getContext("2d");
+  let hue = 0; // Value will change over time.
+  let direction = true; // Value will change over time.
+
+  // Starting Coordinates
+  let lastX = 0;
+  let lastY = 0;
+
+  // Flag; Default is 'false'.
+  let isDrawing = false;
+
+  /* Functions */
+  function drawLine(myEvent) {
+
+    // If the user isn't drawing, stop the function.
+    if (!isDrawing) { 
+      return;
+    };
+
+    // Otherwise, draw the line.
+    myContext.beginPath();
+    myContext.moveTo(lastX, lastY);
+    myContext.lineTo(myEvent.offsetX, myEvent.offsetY);
+    myContext.stroke();
+
+    // Update the x and y coordinates.
+    [lastX, lastY] = [myEvent.offsetX, myEvent.offsetY];    
+
+    // Update 'hue' and 'strokeStyle'.
+    hue++; 
+    hue = hue % 360;
+    myContext.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+
+    // Update the 'lineWidth'.
+    if (myContext.lineWidth >= 100 || myContext.lineWidth <= 1) {
+      direction = !direction; // Switch directions.
+    }
+    // Depending on the direction, increase or decrease the 'lineWidth'.
+    if (direction) {
+      myContext.lineWidth++;
+    } else {
+      myContext.lineWidth--;
+    }
+  }
+
+  /* Main Body of Code */
+
+  // Make sure that the canvas covers the entire window.
+  myCanvas.width = window.innerWidth;
+  myCanvas.height = window.innerHeight;
+
+  // Set the content properties.
+  myContext.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  myContext.lineCap = "round";
+  myContext.lineJoin = "round";
+  myContext.lineWidth = 100;
+
+  // Event Listeners
+  myCanvas.addEventListener("mousedown", myEvent => {
+    // Set isDrawing to 'true'.
+    isDrawing = true;
+    // Set the starting point to where the user started clicking on the canvas.
+    [lastX, lastY] = [myEvent.offsetX, myEvent.offsetY];
+  });
+  // Start drawing the line once the mouse moves.
+  myCanvas.addEventListener("mousemove", drawLine);
+  // If the user lets go or leaves the screen, stop drawing.
+  myCanvas.addEventListener("mouseup", () => { isDrawing = false; });
+  myCanvas.addEventListener("mouseout", () => { isDrawing = false; });
+
+</script>
+
+<style>
+
+  html, body {
+    margin: 0;
+  }
+
+</style>
+
+</body>
+
+</html>
