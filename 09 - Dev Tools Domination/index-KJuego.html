@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Console Tricks!</title>
+</head>
+
+<body>
+
+  <p onClick="makeGreen()">×BREAK×DOWN×</p>
+
+  <script>
+
+    const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
+
+    function makeGreen() {
+      const p = document.querySelector('p');
+      p.style.color = '#BADA55';
+      p.style.fontSize = '50px';
+    }
+
+    // Regular console.log()
+    console.log("This is a normal string.");
+
+    // Interpolated Strings
+    console.log("This is an %s string.", "interpolated");
+
+    // Styled Strings
+    console.log("%c This will be unusually large.", "font-size: 25px");
+
+    // Create a warning!
+    console.warn("This is a warning. Proceed with caution!");
+
+    // Display an error. :|
+    console.error("Uh oh...You might want to check your code.");
+
+    // Provide some info.
+    console.info("Whoops! Never mind. There are no issues.");
+
+    // Testing with console.assert();
+    console.assert("apple juice" === "orange juice", "Looks like you got the wrong juice.");
+
+    // clearing the Console
+    // console.clear();
+
+    // Viewing DOM Elements
+    pElement = document.querySelector("p");
+    console.dir(pElement);
+
+    // Grouping Items Together
+    dogs.forEach(dog => {
+      console.groupCollapsed(`${dog.name}`);
+      console.log(`My dog's name is ${dog.name}.`);
+      console.log(`${dog.name} is ${dog.age} years old.`);
+      console.groupEnd(`${dog.name}`);
+    })
+
+    // Counting
+    console.count("Yes");
+    console.count("No");
+    console.count("Yes");
+    console.count("No");
+    console.count("No");
+    console.count("No");
+    console.count("Yes");
+    console.count("No");
+    console.count("No");
+    console.count("No");
+    console.count("Yes");
+    console.count("No");
+    console.count("Yes");
+    console.count("Yes");
+    console.count("No");
+    console.count("Yes");
+
+    // Timing
+    console.time("Counting to 100");
+    for (let i = 1; i <= 100; i++) {
+      // Do nothing...
+    }
+    console.timeEnd("Counting to 100");
+
+  </script>
+
+</body>
+
+</html>
