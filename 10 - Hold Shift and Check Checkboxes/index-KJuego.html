@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hold Shift to Check Multiple Checkboxes</title>
+</head>
+
+<body>
+
+  <style>
+
+    html {
+      font-family: sans-serif;
+      background: #ffc600;
+    }
+
+    .inbox {
+      max-width: 400px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 5px;
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #F1F1F1;
+    }
+
+    .item:last-child {
+      border-bottom: 0;
+    }
+
+    input:checked + p {
+      background: #F9F9F9;
+      text-decoration: line-through;
+    }
+
+    input[type="checkbox"] {
+      margin: 20px;
+    }
+
+    p {
+      margin: 0;
+      padding: 20px;
+      transition: background 0.2s;
+      flex: 1;
+      font-family:'helvetica neue';
+      font-size: 20px;
+      font-weight: 200;
+      border-left: 1px solid #D1E2FF;
+    }
+  </style>
+
+  <!--
+
+    The following is a common layout you would see in an email client.
+
+    When a user clicks a checkbox, holds Shift, and then clicks another checkbox a few rows down (or up), all the checkboxes in between those two checkboxes should be checked.
+
+  -->
+
+  <div class="inbox">
+    <div class="item">
+      <input type="checkbox">
+      <p>This is an inbox layout.</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Check one item</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Hold down your Shift key</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Check a lower item</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Everything in between should also be set to checked</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Try to do it without any libraries</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Just regular JavaScript</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Good Luck!</p>
+    </div>
+    <div class="item">
+      <input type="checkbox">
+      <p>Don't forget to tweet your result!</p>
+    </div>
+  </div>
+
+<script>
+
+  /* Variables */
+
+  let shiftDown = false;
+  let lastItemChecked = -1;
+
+  /* Functions */
+
+  // Task: If the 'shift' key has been pressed or released, update the 'shiftDown' variable.
+  const toggleShiftDown = myEvent => {
+    if (myEvent.keyCode === 16) {
+      shiftDown = !shiftDown;
+    }
+  }
+
+  // Task: Depending on whether the shift key has been pressed and if the item was checked, update the 'lastItemChecked' variable.
+  // Note: A regular function declaration was used because 'this' was needed.
+  function updateLastItem(myEvent) {
+    // Obtain the 'input and 'p' elements.
+    const inputElement = this.childNodes[1];
+    const pElement = this.childNodes[3];
+
+    // Check if 'shiftDown' is set to true and if item is checked.
+    if (shiftDown && inputElement.checked) {
+      // Call the 'checkItemsBetween' function and store the new value in 'lastItemChecked'.
+      lastItemChecked = checkItemsBetween(pElement);
+    } else if (!shiftDown && inputElement.checked) {
+      // Find out which item has been checked off and store it in 'lastItemChecked'.
+      lastItemChecked = allItems.findIndex(item => {
+        return item.childNodes[3] === pElement;
+      });
+    }
+  }
+
+  // Task: Check off all items between 'lastItemChecked' and 'newItemChecked'.
+  const checkItemsBetween = pElement => {
+    // Find out which item has been checked off and store it in a 'newItemChecked'.
+    const newItemChecked = allItems.findIndex(item => {
+      return item.childNodes[3] === pElement;
+    });
+
+    // Check if 'lastItemChecked' is no longer set to default -1.
+    if (lastItemChecked !== -1) {
+      // Using 'lastItemChecked' and 'newItemChecked' locations, check off all items between.
+      if (lastItemChecked < newItemChecked) { // Smallest to Largest Index
+        for (let index = lastItemChecked; index <= newItemChecked; index++) {
+          allItems[index].childNodes[1].checked = true;
+        };
+      } else if (lastItemChecked > newItemChecked) { // Largest to Smallest Index
+        for (let index = lastItemChecked; index >= newItemChecked; index--) {
+          allItems[index].childNodes[1].checked = true;
+        };
+      };
+    };
+
+    // Return the new index.
+    return newItemChecked;
+  }
+
+  /* Main Body of Code */
+
+  // Add a 'keydown' and 'keyup' event listener.
+  document.addEventListener("keydown", toggleShiftDown);
+  document.addEventListener("keyup", toggleShiftDown);
+
+  // Store all of the 'item' elements into an array.
+  const allItems = Array.from(document.querySelectorAll(".item"));
+  // Add a 'click' event listener to each item.
+  allItems.forEach(item => {
+    item.addEventListener("click", updateLastItem);
+  })
+
+</script>
+
+</body>
+
+</html>
